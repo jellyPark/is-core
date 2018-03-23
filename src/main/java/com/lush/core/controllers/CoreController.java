@@ -1,11 +1,5 @@
 package com.lush.core.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.lush.core.models.EndpointDto;
-import com.lush.core.models.Endpoint;
-import com.lush.core.models.Response;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -19,6 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.lush.core.models.Endpoint;
+import com.lush.core.models.EndpointDto;
+import com.lush.core.models.Response;
+import com.sun.nio.sctp.IllegalUnbindException;
 
 /**
  * ActuatorController
@@ -73,9 +74,9 @@ public class CoreController {
   private String serviceVersion;
 
   /**
-   * Define InetAddress for get host name.
-   * The hostname can be imported as a HttpServletRequest object,
-   * but an issue occurs in the docker collector container that recognizes the hostname as ' java_http'.
+   * Define InetAddress for get host name. The hostname can be imported as a HttpServletRequest
+   * object, but an issue occurs in the docker collector container that recognizes the hostname as '
+   * java_http'.
    */
   private InetAddress ip;
 
@@ -95,7 +96,8 @@ public class CoreController {
    */
   public String setUri(String context) throws UnknownHostException {
     ip = InetAddress.getLocalHost();
-    return request.getScheme() + "://" + ip.getHostName() + ":" + request.getServerPort() + "/" + context;
+    return request.getScheme() + "://" + ip.getHostName() + ":" + request.getServerPort() + "/"
+        + context;
   }
 
   /**
@@ -121,37 +123,43 @@ public class CoreController {
     }
 
     // Check status of database connection.
-    if (health.getBody().contains("db")) {
-      JsonObject temp = healthBody.get("details").getAsJsonObject();
-      temp = temp.get("db").getAsJsonObject();
-      String dbStatus = temp.get("status").getAsString();
+    String body = health.getBody();
+    if (body != null && !"".equals(body)) {
+      if (body.contains("db")) {
+        JsonObject temp = healthBody.get("details").getAsJsonObject();
+        temp = temp.get("db").getAsJsonObject();
+        String dbStatus = temp.get("status").getAsString();
 
-      if (!"UP".equals(dbStatus)) {
-        response.setStatus("fail");
+        if (!"UP".equals(dbStatus)) {
+          response.setStatus("fail");
 
-        if (!"".equals(response.getMessage())) {
-          response.setMessage(response.getMessage() + " and database status is fail" );
-        } else {
-          response.setMessage("Redis status is fail");
+          if (!"".equals(response.getMessage())) {
+            response.setMessage(response.getMessage() + " and database status is fail");
+          } else {
+            response.setMessage("Redis status is fail");
+          }
         }
       }
-    }
 
-    // Check status of redis connection.
-    if (health.getBody().contains("redis")) {
-      JsonObject temp = healthBody.get("details").getAsJsonObject();
-      temp = temp.get("redis").getAsJsonObject();
-      String redisStatus = temp.get("status").getAsString();
+      // Check status of redis connection.
+      if (body.contains("redis")) {
+        JsonObject temp = healthBody.get("details").getAsJsonObject();
+        temp = temp.get("redis").getAsJsonObject();
+        String redisStatus = temp.get("status").getAsString();
 
-      if (!"UP".equals(redisStatus)) {
-        response.setStatus("fail");
+        if (!"UP".equals(redisStatus)) {
+          response.setStatus("fail");
 
-        if (!"".equals(response.getMessage())) {
-          response.setMessage(response.getMessage() + " and redis status is fail" );
-        } else {
-          response.setMessage("Redis status is fail");
+          if (!"".equals(response.getMessage())) {
+            response.setMessage(response.getMessage() + " and redis status is fail");
+          } else {
+            response.setMessage("Redis status is fail");
+          }
         }
       }
+
+    } else {
+      throw new NullPointerException();
     }
 
     return response;
@@ -164,11 +172,17 @@ public class CoreController {
    * @throws UnknownHostException
    */
   @GetMapping("/")
-  public ResponseEntity endpoints() throws UnknownHostException {
+  public ResponseEntity<Object> endpoints() throws UnknownHostException {
     // Get endpoints data.
     String uri = setUri("mappings");
     ResponseEntity<JsonNode> data = restTemplate.getForEntity(uri, JsonNode.class);
-    JsonNode dataBody = data.getBody().findPath("dispatcherServlet");
+    JsonNode dataBody = data.getBody();
+
+    if (dataBody == null) {
+      throw new IllegalUnbindException();
+    }
+
+    dataBody = dataBody.findPath("dispatcherServlet");
 
     // Find all method and uri
     List<JsonNode> methods = dataBody.findValues("methods");
@@ -179,11 +193,12 @@ public class CoreController {
     String regex = "[\"\\[\\]]";
     List<EndpointDto.Info> endpointList = new ArrayList<EndpointDto.Info>();
 
-    for (int idx=0; idx < methods.size(); idx++) {
+    for (int idx = 0; idx < methods.size(); idx++) {
       method = methods.get(idx).toString().replaceAll(regex, "");
       pattern = patterns.get(idx).toString().replaceAll(regex, "");
 
-      if (method.length() == 0 || pattern.length() == 0 || "/health".equals(pattern) || "/mappings".equals(pattern)) {
+      if (method.length() == 0 || pattern.length() == 0 || "/health".equals(pattern)
+          || "/mappings".equals(pattern)) {
         continue;
       }
 
@@ -201,6 +216,6 @@ public class CoreController {
     endpoints.setService_version(serviceVersion);
     endpoints.setEndpoints(endpointList);
 
-    return new ResponseEntity(endpoints, HttpStatus.OK);
+    return new ResponseEntity<Object>(endpoints, HttpStatus.OK);
   }
 }

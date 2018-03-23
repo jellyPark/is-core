@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,37 +28,31 @@ import org.springframework.test.web.servlet.MockMvc;
 public class CoreControllerTest {
 
   /**
-   * MockMvc does not create Servlet Container.
-   * You can test the business logic of the API deployed.
+   * MockMvc does not create Servlet Container. You can test the business logic of the API deployed.
    */
   @Autowired
   private MockMvc mockMvc;
 
   /**
-   * checkHealthz
-   * Test the application health.(application, database, redis)
+   * checkHealthz Test the application health.(application, database, redis)
    *
    * @throws Exception
    */
   @Test
   public void checkHealthz() throws Exception {
-    mockMvc.perform(get("/healthz"))
-        .andDo(print())
+    mockMvc.perform(get("/healthz")).andDo(print())
         .andExpect(header().string("Content-Type", "application/json;charset=UTF-8"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.status", is("ok")));
+        .andExpect(status().isOk()).andExpect(jsonPath("$.status", is("ok")));
   }
 
   /**
-   * checkEndpoints
-   * Test the application service information and mapping endpoints.
+   * checkEndpoints Test the application service information and mapping endpoints.
    *
    * @throws Exception
    */
   @Test
   public void checkEndpoints() throws Exception {
-    mockMvc.perform(get("/"))
-        .andDo(print())
+    mockMvc.perform(get("/")).andDo(print())
         .andExpect(header().string("Content-Type", "application/json;charset=UTF-8"))
         .andExpect(status().isOk());
   }

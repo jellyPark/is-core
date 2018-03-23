@@ -1,6 +1,10 @@
 package com.lush.core.models;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import com.lush.core.exceptions.CoreException;
+
 
 /**
  * Response
@@ -24,6 +28,11 @@ public class Response {
   private String message;
 
   /**
+   * Response code;
+   */
+  private int code;
+
+  /**
    * Response data.
    */
   private Object data;
@@ -31,8 +40,9 @@ public class Response {
   /**
    * Description : Default constructor.
    */
-  public Response () {
+  public Response() {
     this.status = "ok";
+    this.code = 200;
     this.message = "";
     this.data = "";
   }
@@ -41,23 +51,25 @@ public class Response {
    * Description : Constructor.
    *
    * @param status
-   */
-  public Response(String status) {
-    this.status = status;
-    this.message = "";
-    this.data = "";
-  }
-
-  /**
-   * Description : Constructor.
-   *
-   * @param status
+   * @param code
    * @param message
    */
-  public Response(String status, String message) {
+  public Response(String status, int code, String message) {
     this.status = status;
+    this.code = code;
     this.message = message;
     this.data = "";
+  }
+
+  /**
+   * Description : Exception constructor.
+   * 
+   * @param status
+   * @param code
+   */
+  public ResponseEntity<Object> Response(String status, CoreException code) {
+    return new ResponseEntity<Object>(new Response("fail", code.getCode(), code.getMassage()),
+        HttpStatus.BAD_REQUEST);
   }
 
   // Getter and Setter
@@ -67,6 +79,14 @@ public class Response {
 
   public void setStatus(String status) {
     this.status = status;
+  }
+
+  public int getCode() {
+    return code;
+  }
+
+  public void setCode(int code) {
+    this.code = code;
   }
 
   public String getMessage() {
@@ -84,4 +104,5 @@ public class Response {
   public void setData(Object data) {
     this.data = data;
   }
+
 }
