@@ -12,7 +12,7 @@ public enum CoreException {
   /**
    * Not Found Data Exception
    */
-  NotFoundData(404, "no data found"),
+  NotFoundData(204, "no data found"),
 
   /**
    * Duplicated Data Exception
