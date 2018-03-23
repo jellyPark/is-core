@@ -1,7 +1,5 @@
 package com.lush.core.models;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import com.lush.core.exceptions.CoreException;
 
@@ -67,9 +65,10 @@ public class Response {
    * @param status
    * @param code
    */
-  public ResponseEntity<Object> Response(String status, CoreException code) {
-    return new ResponseEntity<Object>(new Response("fail", code.getCode(), code.getMassage()),
-        HttpStatus.BAD_REQUEST);
+  public Response(CoreException code) {
+    this.status = "fail";
+    this.code = code.getCode();
+    this.message = code.getMassage();
   }
 
   // Getter and Setter

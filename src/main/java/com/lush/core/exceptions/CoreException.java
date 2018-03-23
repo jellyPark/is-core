@@ -1,5 +1,12 @@
 package com.lush.core.exceptions;
 
+/**
+ * Exception Handle
+ * 
+ * @author Jelly
+ * @author Is
+ *
+ */
 public enum CoreException {
 
   /**
@@ -17,9 +24,22 @@ public enum CoreException {
    */
   FileTypeException(415, "don't allow File type");
 
+  /**
+   * Exception Code
+   */
   private final int code;
+
+  /**
+   * Exception Message
+   */
   private final String massage;
 
+  /**
+   * Default creator
+   * 
+   * @param code
+   * @param massage
+   */
   CoreException(int code, String massage) {
     this.code = code;
     this.massage = massage;
