@@ -1,7 +1,7 @@
 package com.lush.core.models;
 
 import org.springframework.stereotype.Component;
-import com.lush.core.exceptions.DefaultException;
+import com.lush.core.exceptions.CoreException;
 
 
 /**
@@ -65,7 +65,7 @@ public class Response {
    * @param status
    * @param code
    */
-  public Response(DefaultException code) {
+  public Response(CoreException code) {
     this.status = "fail";
     this.code = code.getCode();
     this.message = code.getMassage();

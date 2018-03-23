@@ -1,52 +1,56 @@
 package com.lush.core.exceptions;
 
-public class CoreException {
+/**
+ * Exception Handler
+ * 
+ * @author Jelly
+ * @author Is
+ *
+ */
+public enum CoreException {
+
+  /**
+   * Not Found Data Exception
+   */
+  NotFoundData(404, "no data found"),
+
+  /**
+   * Duplicated Data Exception
+   */
+  DuplicatedData(412, "already duplicated data"),
+
+  /**
+   * Don't allow File type Exception
+   */
+  FileTypeException(415, "don't allow File type");
 
   /**
    * Exception Code
    */
-  private int code;
+  private final int code;
 
   /**
    * Exception Message
    */
-  private String message;
+  private final String massage;
 
   /**
-   * The default creator. (using default code and message)
-   * 
-   * @param coreException
-   */
-  public CoreException(DefaultException coreException) {
-    this.code = coreException.getCode();
-    this.message = coreException.getMassage();
-  }
-
-  /**
-   * The default creator. (User Created)
+   * Default creator
    * 
    * @param code
-   * @param handlerMessage
+   * @param massage
    */
-  public CoreException(int code, String handlerMessage) {
+  CoreException(int code, String massage) {
     this.code = code;
-    this.message = handlerMessage;
+    this.massage = massage;
   }
 
   public int getCode() {
     return code;
   }
 
-  public void setCode(int code) {
-    this.code = code;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
+  public String getMassage() {
+    return massage;
   }
 
 }
