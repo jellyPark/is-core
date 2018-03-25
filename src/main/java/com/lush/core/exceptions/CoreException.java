@@ -8,7 +8,7 @@ import com.lush.core.models.Response;
  * @author Jelly
  *
  */
-public class CoreException {
+public class CoreException extends RuntimeException {
 
 
   /**
