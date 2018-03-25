@@ -1,7 +1,6 @@
 package com.lush.core.models;
 
 import org.springframework.stereotype.Component;
-import com.lush.core.exceptions.CoreException;
 
 
 /**
@@ -26,11 +25,6 @@ public class Response {
   private String message;
 
   /**
-   * Response code;
-   */
-  private int code;
-
-  /**
    * Response data.
    */
   private Object data;
@@ -40,7 +34,6 @@ public class Response {
    */
   public Response() {
     this.status = "ok";
-    this.code = 200;
     this.message = "";
     this.data = "";
   }
@@ -54,22 +47,21 @@ public class Response {
    */
   public Response(String status, int code, String message) {
     this.status = status;
-    this.code = code;
     this.message = message;
     this.data = "";
   }
 
-  /**
-   * Description : Exception constructor.
-   * 
-   * @param status
-   * @param code
-   */
-  public Response(CoreException code) {
-    this.status = "fail";
-    this.code = code.getCode();
-    this.message = code.getMassage();
-  }
+  // /**
+  // * Description : Exception constructor.
+  // *
+  // * @param status
+  // * @param code
+  // */
+  // public Response(CoreException code) {
+  // this.status = "fail";
+  // this.code = code.getCode();
+  // this.message = code.getMassage();
+  // }
 
   // Getter and Setter
   public String getStatus() {
@@ -78,14 +70,6 @@ public class Response {
 
   public void setStatus(String status) {
     this.status = status;
-  }
-
-  public int getCode() {
-    return code;
-  }
-
-  public void setCode(int code) {
-    this.code = code;
   }
 
   public String getMessage() {

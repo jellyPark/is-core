@@ -3,6 +3,7 @@ package com.lush.core.utils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import org.springframework.stereotype.Component;
 
 /**
  * Date Format Util
@@ -10,6 +11,7 @@ import java.time.LocalTime;
  * @author Jelly
  *
  */
+@Component
 public class DateUtil {
 
   // get now local year
